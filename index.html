@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Social App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            margin-top: 15px;
+        }
+
+        nav button {
+            background: white;
+            color: #222;
+            margin: 4px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        button {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 3px;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .post {
+            border-top: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .welcome {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>My Social App</h1>
+    <p>Connect. Share. Discover.</p>
+
+    <nav>
+        <button onclick="goHome()">🏠 Home</button>
+        <button onclick="searchApp()">🔍 Search</button>
+        <button onclick="goCreate()">➕ Create</button>
+        <button onclick="goProfile()">👤 Profile</button>
+        <button onclick="showLogin()">🔐 Login</button>
+    </nav>
+</header>
+
+
+<div class="container">
+
+    <!-- SIGN UP -->
+    <div class="box" id="signupSection">
+        <h2>📝 Create Your Account</h2>
+
+        <input type="text" id="signupName" placeholder="Your name">
+
+        <input type="email" id="signupEmail" placeholder="Email address">
+
+        <input type="password" id="signupPassword" placeholder="Password">
+
+        <button onclick="signUp()">Create Account</button>
+
+        <p>
+            Already have an account?
+            <button onclick="showLogin()">Login</button>
+        </p>
+    </div>
+
+
+    <!-- LOGIN -->
+    <div class="box hidden" id="loginSection">
+        <h2>🔐 Login</h2>
+
+        <input type="email" id="loginEmail" placeholder="Email address">
+
+        <input type="password" id="loginPassword" placeholder="Password">
+
+        <button onclick="login()">Login</button>
+
+        <p>
+            Don't have an account?
+            <button onclick="showSignup()">Create Account</button>
+        </p>
+    </div>
+
+
+    <!-- PROFILE -->
+    <div class="box" id="profileSection">
+        <h2>👤 My Profile</h2>
+
+        <p id="profileName">
+            <strong>Name:</strong> New User
+        </p>
+
+        <p id="profileBio">
+            <strong>Bio:</strong> Welcome to my profile!
+        </p>
+
+        <button onclick="editProfile()">✏️ Edit Profile</button>
+
+        <button onclick="logout()">🚪 Logout</button>
+    </div>
+
+
+    <!-- CREATE POST -->
+    <div class="box" id="createSection">
+        <h2>➕ Create a Post</h2>
+
+        <textarea id="postText"
+            placeholder="What's on your mind?"></textarea>
+
+        <button onclick="createPost()">📤 Post</button>
+    </div>
+
+
+    <!-- HOME -->
+    <div class="box" id="homeSection">
+        <h2>🏠 Home Feed</h2>
+
+        <div id="feed"></div>
+    </div>
+
+
+    <!-- SEARCH -->
+    <div class="box hidden" id="searchSection">
+        <h2>🔍 Search</h2>
+
+        <input type="text"
+            id="searchInput"
+            placeholder="Search for something...">
+
+        <button onclick="performSearch()">Search</button>
+
+        <p id="searchResult"></p>
+    </div>
+
+</div>
+
+
+<script>
+
+window.onload = function() {
+
+    let savedName = localStorage.getItem("userName");
+    let savedBio = localStorage.getItem("userBio");
+
+    if (savedName) {
+        document.getElementById("profileName").innerHTML =
+            "<strong>Name:</strong> " + savedName;
+    }
+
+    if (savedBio) {
+        document.getElementById("profileBio").innerHTML =
+            "<strong>Bio:</strong> " + savedBio;
+    }
+
+    let savedPosts =
+        JSON.parse(localStorage.getItem("posts")) || [];
+
+    savedPosts.forEach(function(postText) {
+        displayPost(postText);
+    });
+};
+
+
+function signUp() {
+
+    let name =
+        document.getElementById("signupName").value;
+
+    let email =
+        document.getElementById("signupEmail").value;
+
+    let password =
+        document.getElementById("signupPassword").value;
+
+    if (
+        name.trim() === "" ||
+        email.trim() === "" ||
+        password.trim() === ""
+    ) {
+        alert("Please fill in all the fields.");
+        return;
+    }
+
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
+
+    document.getElementById("profileName").innerHTML =
+        "<strong>Name:</strong> " + name;
+
+    alert("Welcome " + name + "! Your account has been created.");
+
+    showLogin();
+}
+
+
+function login() {
+
+    let email =
+        document.getElementById("loginEmail").value;
+
+    let password =
+        document.getElementById("loginPassword").value;
+
+    let savedEmail =
+        localStorage.getItem("userEmail");
+
+    if (email === savedEmail && password !== "") {
+
+        alert("Login successful! Welcome back.");
+
+        goHome();
+
+    } else {
+
+        alert("Email not found or password is empty.");
+    }
+}
+
+
+function logout() {
+
+    alert("You have logged out.");
+
+    showLogin();
+}
+
+
+function showLogin() {
+
+    document.getElementById("signupSection")
+        .classList.add("hidden");
+
+    document.getElementById("loginSection")
+        .classList.remove("hidden");
+}
+
+
+function showSignup() {
+
+    document.getElementById("loginSection")
+        .classList.add("hidden");
+
+    document.getElementById("signupSection")
+        .classList.remove("hidden");
+}
+
+
+function editProfile() {
+
+    let name = prompt("Enter your name:");
+
+    if (name !== null && name.trim() !== "") {
+
+        localStorage.setItem("userName", name);
+
+        document.getElementById("profileName").innerHTML =
+            "<strong>Name:</strong> " + name;
+    }
+
+    let bio = prompt("Enter your bio:");
+
+    if (bio !== null && bio.trim() !== "") {
+
+        localStorage.setItem("userBio", bio);
+
+        document.getElementById("profileBio").innerHTML =
+            "<strong>Bio:</strong> " + bio;
+    }
+}
+
+
+function createPost() {
+
+    let text =
+        document.getElementById("postText").value;
+
+    if (text.trim() === "") {
+
+        alert("Please write something first.");
+        return;
+    }
+
+    let posts =
+        JSON.parse(localStorage.getItem("posts")) || [];
+
+    posts.unshift(text);
+
+    localStorage.setItem(
+        "posts",
+        JSON.stringify(posts)
+    );
+
+    displayPost(text);
+
+    document.getElementById("postText").value = "";
+
+    goHome();
+}
+
+
+function displayPost(text) {
+
+    let post =
+        document.createElement("div");
+
+    post.className = "post";
+
+    post.innerHTML =
+        "<strong>New User</strong><br><br>" +
+        text +
+        "<br><br>" +
+        "<button onclick='likePost(this)'>" +
+        "❤️ Like <span>0</span>" +
+        "</button>" +
+        "<br><br>" +
+        "<input type='text' placeholder='Write a comment...'>" +
+        "<button onclick='addComment(this)'>" +
+        "💬 Comment" +
+        "</button>" +
+        "<div class='comments'></div>";
+
+    document.getElementById("feed")
+        .prepend(post);
+}
+
+
+function likePost(button) {
+
+    let number =
+        button.querySelector("span");
+
+    number.innerText =
+        Number(number.innerText) + 1;
+}
+
+
+function addComment(button) {
+
+    let input =
+        button.previousElementSibling;
+
+    let comment =
+        input.value;
+
+    if (comment.trim() === "") {
+        return;
+    }
+
+    let comments =
+        button.nextElementSibling;
+
+    let newComment =
+        document.createElement("p");
+
+    newComment.innerText =
+        "💬 " + comment;
+
+    comments.appendChild(newComment);
+
+    input.value = "";
+}
+
+
+function goHome() {
+
+    document.getElementById("homeSection")
+        .classList.remove("hidden");
+
+    document.getElementById("profileSection")
+        .classList.remove("hidden");
+
+    document.getElementById("createSection")
+        .classList.remove("hidden");
+
+    document.getElementById("searchSection")
+        .classList.add("hidden");
+
+    window.scrollTo(0, 0);
+}
+
+
+function goCreate() {
+
+    document.getElementById("homeSection")
+        .classList.remove("hidden");
+
+    document.getElementById("profileSection")
+        .classList.add("hidden");
+
+    document.getElementById("createSection")
+        .classList.remove("hidden");
+
+    document.getElementById("searchSection")
+        .classList.add("hidden");
+
+    document.getElementById("postText").focus();
+}
+
+
+function goProfile() {
+
+    document.getElementById("homeSection")
+        .classList.add("hidden");
+
+    document.getElementById("profileSection")
+        .classList.remove("hidden");
+
+    document.getElementById("createSection")
+        .classList.add("hidden");
+
+    document.getElementById("searchSection")
+        .classList.add("hidden");
+
+    window.scrollTo(0, 0);
+}
+
+
+function searchApp() {
+
+    document.getElementById("homeSection")
+        .classList.add("hidden");
+
+    document.getElementById("profileSection")
+        .classList.add("hidden");
+
+    document.getElementById("createSection")
+        .classList.add("hidden");
+
+    document.getElementById("searchSection")
+        .classList.remove("hidden");
+
+    document.getElementById("searchInput").focus();
+}
+
+
+function performSearch() {
+
+    let search =
+        document.getElementById("searchInput").value;
+
+    if (search.trim() === "") {
+
+        document.getElementById("searchResult").innerText =
+            "Please enter something to search.";
+
+        return;
+    }
+
+    document.getElementById("searchResult").innerText =
+        "Searching for: " + search;
+}
+
+</script>
+
+</body>
+</html>
