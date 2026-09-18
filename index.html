@@ -1,338 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Social App</title>
-<style>
-body{font-family:Arial;margin:0;background:#f3f4f6;color:#222}
-header{background:#1877f2;color:white;padding:15px;text-align:center}
-nav{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;padding:10px;background:white}
-button{padding:10px 14px;border:0;border-radius:8px;background:#1877f2;color:white;margin:4px}
-input,textarea{width:90%;padding:10px;margin:6px;border:1px solid #ccc;border-radius:8px}
-section{display:none;max-width:700px;margin:15px auto;background:white;padding:15px;border-radius:10px}
-.active{display:block}
-.card{padding:12px;border-bottom:1px solid #ddd}
-.small{font-size:13px;color:#777}
-.online{color:green;font-weight:bold}
-.offline{color:#777}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sustain Social</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+    }
+
+    header {
+      background: #1877f2;
+      color: white;
+      padding: 18px;
+      text-align: center;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 10px;
+    }
+
+    .post-box, .post {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 10px;
+      background: #1877f2;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .post-name {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-<h1>My Social App</h1>
-<p>Connect. Share. Discover.</p>
-</header>
+  <header>Sustain Social</header>
 
-<nav>
-<button onclick="show('home')">Home</button>
-<button onclick="show('search')">Search</button>
-<button onclick="show('create')">Create</button>
-<button onclick="show('messages')">💬 Messages</button>
-<button onclick="show('notifications')">🔔 Notifications</button>
-<button onclick="show('profile')">Profile</button>
-<button onclick="logout()">Logout</button>
-</nav>
+  <div class="container">
 
-<section id="home" class="active">
-<h2>Home Feed</h2>
-<div id="feed"></div>
-</section>
+    <div class="post-box">
+      <textarea id="postText" placeholder="What's on your mind?"></textarea>
+      <button onclick="createPost()">Post</button>
+    </div>
 
-<section id="search">
-<h2>Search Users</h2>
-<input id="searchInput" placeholder="Search by name or email">
-<button onclick="searchUsers()">Search</button>
-<div id="searchResults"></div>
-</section>
+    <div id="feed"></div>
 
-<section id="create">
-<h2>Create a Post</h2>
-<textarea id="postText" placeholder="What's on your mind?"></textarea>
-<button onclick="createPost()">Post</button>
-</section>
+  </div>
 
-<section id="profile">
-<h2>My Profile</h2>
-<div id="profileInfo"></div>
-</section>
+  <script>
+    function createPost() {
+      const text = document.getElementById("postText").value.trim();
 
-<section id="messages">
-<h2>Messages</h2>
-<div id="chatUsers"></div>
-<div id="chatBox"></div>
-</section>
+      if (text === "") {
+        alert("Please write something first.");
+        return;
+      }
 
-<section id="notifications">
-<h2>Notifications</h2>
-<div id="notificationList"></div>
-</section>
+      const post = document.createElement("div");
+      post.className = "post";
 
-<script type="module">
+      post.innerHTML = `
+        <div class="post-name">Official Sustain</div>
+        <div>${text}</div>
+      `;
 
-import {initializeApp}
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+      document.getElementById("feed").prepend(post);
+      document.getElementById("postText").value = "";
+    }
+  </script>
 
-import {
-getAuth,createUserWithEmailAndPassword,
-signInWithEmailAndPassword,signOut,onAuthStateChanged
-}
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-
-import {
-getFirestore,collection,doc,setDoc,getDoc,getDocs,
-addDoc,onSnapshot,query,orderBy,updateDoc,
-arrayUnion,arrayRemove
-}
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-const firebaseConfig={
-apiKey:"AIzaSyBX1fRxPNNyKL1-CR83uiG1I-WhOQzggiE",
-authDomain:"my-social-app-a4ad0.firebaseapp.com",
-projectId:"my-social-app-a4ad0",
-storageBucket:"my-social-app-a4ad0.firebasestorage.app",
-messagingSenderId:"408621174015",
-appId:"1:408621174015:web:4338648b072d5bf871d0ca",
-measurementId:"G-1M7Z99T8NT"
-};
-
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-
-let user=null;
-let currentChat=null;
-
-window.show=function(id){
-document.querySelectorAll("section").forEach(x=>x.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-if(id==="home")loadFeed();
-if(id==="profile")loadProfile();
-if(id==="messages")loadChatUsers();
-if(id==="notifications")loadNotifications();
-};
-
-onAuthStateChanged(auth,async u=>{
-user=u;
-if(u){
-await setDoc(doc(db,"users",u.uid),{
-email:u.email,
-online:true,
-lastSeen:Date.now()
-},{merge:true});
-loadFeed();
-loadProfile();
-setInterval(()=>updateStatus(true),60000);
-}else{
-document.body.innerHTML="<h2 style='text-align:center;margin-top:50px'>Please log in to use My Social App.</h2>";
-}
-});
-
-async function updateStatus(status){
-if(user)await updateDoc(doc(db,"users",user.uid),{
-online:status,lastSeen:Date.now()
-});
-}
-
-window.addEventListener("beforeunload",()=>updateStatus(false));
-
-window.logout=async function(){
-await updateStatus(false);
-await signOut(auth);
-};
-
-async function loadFeed(){
-const snap=await getDocs(query(collection(db,"posts"),orderBy("createdAt","desc")));
-let html="";
-for(const d of snap.docs){
-const p=d.data();
-html+=`
-<div class="card">
-<b>${p.userName||"User"}</b>
-<p>${p.text||""}</p>
-<button onclick="likePost('${d.id}',${p.likes||0})">❤️ ${p.likes||0}</button>
-<p class="small">${new Date(p.createdAt||Date.now()).toLocaleString()}</p>
-</div>`;
-}
-document.getElementById("feed").innerHTML=html||"<p>No posts yet.</p>";
-}
-
-window.createPost=async function(){
-const text=document.getElementById("postText").value.trim();
-if(!text)return;
-await addDoc(collection(db,"posts"),{
-userId:user.uid,
-userName:user.email,
-text,
-likes:0,
-createdAt:Date.now()
-});
-document.getElementById("postText").value="";
-show("home");
-};
-
-window.likePost=async function(id,likes){
-await updateDoc(doc(db,"posts",id),{likes:likes+1});
-loadFeed();
-};
-
-async function loadProfile(){
-const d=await getDoc(doc(db,"users",user.uid));
-const p=d.data()||{};
-document.getElementById("profileInfo").innerHTML=`
-<h3>${p.name||user.email}</h3>
-<p>${p.bio||"Welcome to my profile."}</p>
-<p>Followers: ${(p.followers||[]).length}</p>
-<p>Following: ${(p.following||[]).length}</p>
-`;
-}
-
-window.searchUsers=async function(){
-const term=document.getElementById("searchInput").value.toLowerCase();
-const snap=await getDocs(collection(db,"users"));
-let html="";
-snap.forEach(d=>{
-const p=d.data();
-if(d.id!==user.uid &&
-((p.name||"").toLowerCase().includes(term)||
-(p.email||"").toLowerCase().includes(term))){
-html+=`
-<div class="card">
-<b>${p.name||p.email}</b>
-<p class="${p.online?'online':'offline'}">
-${p.online?"🟢 Online":"⚪ Offline"}
-</p>
-<button onclick="followUser('${d.id}')">Follow</button>
-<button onclick="startChat('${d.id}')">Message</button>
-</div>`;
-}
-});
-document.getElementById("searchResults").innerHTML=html||"No users found.";
-};
-
-window.followUser=async function(uid){
-await updateDoc(doc(db,"users",uid),{
-followers:arrayUnion(user.uid)
-});
-await updateDoc(doc(db,"users",user.uid),{
-following:arrayUnion(uid)
-});
-await createNotification(uid,"started following you.");
-searchUsers();
-};
-
-async function createNotification(uid,message){
-await addDoc(collection(db,"notifications"),{
-userId:uid,
-message:user.email+" "+message,
-createdAt:Date.now(),
-read:false
-});
-}
-
-async function loadNotifications(){
-const snap=await getDocs(collection(db,"notifications"));
-let html="";
-snap.docs
-.filter(d=>d.data().userId===user.uid)
-.sort((a,b)=>(b.data().createdAt||0)-(a.data().createdAt||0))
-.forEach(d=>{
-const n=d.data();
-html+=`
-<div class="card">
-${n.read?"":"🔵 "}${n.message}
-<p class="small">${new Date(n.createdAt).toLocaleString()}</p>
-</div>`;
-});
-document.getElementById("notificationList").innerHTML=
-html||"<p>No notifications yet.</p>";
-}
-
-function chatId(a,b){
-return [a,b].sort().join("_");
-}
-
-window.loadChatUsers=async function(){
-const snap=await getDocs(collection(db,"users"));
-let html="<h3>Users</h3>";
-snap.forEach(d=>{
-if(d.id!==user.uid){
-const p=d.data();
-html+=`
-<div class="card">
-<b>${p.name||p.email}</b>
-<p class="${p.online?'online':'offline'}">
-${p.online?"🟢 Online":"Last seen "+new Date(p.lastSeen||Date.now()).toLocaleString()}
-</p>
-<button onclick="startChat('${d.id}')">Open Chat</button>
-</div>`;
-}
-});
-document.getElementById("chatUsers").innerHTML=html;
-};
-
-window.startChat=async function(uid){
-currentChat=uid;
-const u=await getDoc(doc(db,"users",uid));
-document.getElementById("chatBox").innerHTML=`
-<hr>
-<h3>Chat with ${u.data()?.name||u.data()?.email}</h3>
-<div id="messagesList"></div>
-<input id="messageInput" placeholder="Write a message"
-onkeydown="if(event.key==='Enter')sendMessage()">
-<button onclick="sendMessage()">Send</button>
-`;
-listenMessages();
-};
-
-function listenMessages(){
-const id=chatId(user.uid,currentChat);
-const q=query(
-collection(db,"chats",id,"messages"),
-orderBy("createdAt","asc")
-);
-onSnapshot(q,snap=>{
-let html="";
-snap.forEach(d=>{
-const m=d.data();
-html+=`
-<div class="card">
-<b>${m.senderId===user.uid?"You":"Them"}:</b>
-${m.text}
-</div>`;
-});
-const box=document.getElementById("messagesList");
-if(box)box.innerHTML=html;
-});
-}
-
-window.sendMessage=async function(){
-const input=document.getElementById("messageInput");
-const text=input.value.trim();
-if(!text||!currentChat)return;
-
-const id=chatId(user.uid,currentChat);
-
-await addDoc(collection(db,"chats",id,"messages"),{
-senderId:user.uid,
-receiverId:currentChat,
-text,
-createdAt:Date.now()
-});
-
-await setDoc(doc(db,"chats",id),{
-users:[user.uid,currentChat],
-lastMessage:text,
-lastMessageAt:Date.now()
-},{merge:true});
-
-await createNotification(currentChat,"sent you a message.");
-
-input.value="";
-};
-
-</script>
 </body>
 </html>
