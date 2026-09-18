@@ -1,102 +1,570 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sustain Social</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f4f7;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sustain Social</title>
 
-    header {
-      background: #1877f2;
-      color: white;
-      padding: 18px;
-      text-align: center;
-      font-size: 25px;
-      font-weight: bold;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    .container {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 10px;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f5f7;
+  color: #222;
+}
 
-    .post-box, .post {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+header {
+  background: #1877f2;
+  color: white;
+  padding: 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
-    textarea {
-      width: 100%;
-      height: 80px;
-      padding: 10px;
-      box-sizing: border-box;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      resize: none;
-    }
+.header-content {
+  max-width: 900px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-    button {
-      margin-top: 10px;
-      background: #1877f2;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
 
-    .post-name {
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-  </style>
+.search {
+  width: 220px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 20px;
+}
+
+.container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 0 12px 80px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1877f2;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.post-text {
+  margin: 15px 0;
+  line-height: 1.5;
+}
+
+textarea {
+  width: 100%;
+  min-height: 90px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  resize: vertical;
+  font-size: 15px;
+}
+
+button {
+  border: none;
+  background: #1877f2;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  opacity: .9;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.action-btn {
+  background: transparent;
+  color: #555;
+  margin: 0;
+  flex: 1;
+}
+
+.action-btn.liked {
+  color: #1877f2;
+  font-weight: bold;
+}
+
+.comments {
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.comment {
+  background: #f1f3f5;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-top: 7px;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  z-index: 20;
+}
+
+.nav button {
+  background: transparent;
+  color: #555;
+  margin: 0;
+  font-size: 13px;
+}
+
+.nav button.active {
+  color: #1877f2;
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+h2 {
+  margin-top: 5px;
+}
+
+.notification {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.message {
+  padding: 13px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-cover {
+  height: 130px;
+  background: #1877f2;
+  border-radius: 14px 14px 0 0;
+}
+
+.profile-info {
+  text-align: center;
+  margin-top: -35px;
+}
+
+.big-avatar {
+  width: 80px;
+  height: 80px;
+  margin: auto;
+  border-radius: 50%;
+  background: white;
+  border: 4px solid white;
+  color: #1877f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .search {
+    width: 140px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .nav {
+    gap: 0;
+  }
+
+  .nav button {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <header>Sustain Social</header>
+<header>
+  <div class="header-content">
+    <div class="logo">Sustain Social</div>
+    <input class="search" id="searchInput" placeholder="Search..." oninput="searchPosts()">
+  </div>
+</header>
 
-  <div class="container">
+<div class="container">
 
-    <div class="post-box">
-      <textarea id="postText" placeholder="What's on your mind?"></textarea>
+  <!-- HOME -->
+  <section id="homePage">
+    <div class="card">
+      <h2>What's on your mind?</h2>
+      <textarea id="postText" placeholder="Share something with Sustain Social..."></textarea>
       <button onclick="createPost()">Post</button>
     </div>
 
     <div id="feed"></div>
+  </section>
 
-  </div>
+  <!-- SEARCH -->
+  <section id="searchPage" class="hidden">
+    <div class="card">
+      <h2>Search</h2>
+      <p>Search for posts using the search box above.</p>
+      <div id="searchResults"></div>
+    </div>
+  </section>
 
-  <script>
-    function createPost() {
-      const text = document.getElementById("postText").value.trim();
+  <!-- CREATE -->
+  <section id="createPage" class="hidden">
+    <div class="card">
+      <h2>Create a Post</h2>
+      <textarea id="createText" placeholder="What do you want to share?"></textarea>
+      <button onclick="createPostFromCreate()">Publish</button>
+    </div>
+  </section>
 
-      if (text === "") {
-        alert("Please write something first.");
-        return;
-      }
+  <!-- NOTIFICATIONS -->
+  <section id="notificationsPage" class="hidden">
+    <div class="card">
+      <h2>Notifications</h2>
 
-      const post = document.createElement("div");
-      post.className = "post";
+      <div class="notification">❤️ Someone liked your post.</div>
+      <div class="notification">💬 Someone commented on your post.</div>
+      <div class="notification">👤 Someone followed you.</div>
+    </div>
+  </section>
 
-      post.innerHTML = `
-        <div class="post-name">Official Sustain</div>
-        <div>${text}</div>
+  <!-- MESSAGES -->
+  <section id="messagesPage" class="hidden">
+    <div class="card">
+      <h2>Messages</h2>
+
+      <div class="message">
+        <strong>Welcome to Sustain Social</strong><br>
+        Your messages will appear here.
+      </div>
+
+      <textarea id="messageText" placeholder="Write a message..."></textarea>
+      <button onclick="sendMessage()">Send</button>
+
+      <div id="sentMessages"></div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profilePage" class="hidden">
+    <div class="card">
+      <div class="profile-cover"></div>
+
+      <div class="profile-info">
+        <div class="big-avatar">OS</div>
+        <h2>Official Sustain</h2>
+        <p>Welcome to my Sustain Social profile.</p>
+        <button onclick="editProfile()">Edit Profile</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>About</h3>
+      <p>Building a social community with Sustain Social.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav">
+  <button class="active" onclick="showPage('homePage', this)">🏠 Home</button>
+  <button onclick="showPage('searchPage', this)">🔍 Search</button>
+  <button onclick="showPage('createPage', this)">➕ Create</button>
+  <button onclick="showPage('notificationsPage', this)">🔔 Alerts</button>
+  <button onclick="showPage('messagesPage', this)">💬 Chat</button>
+  <button onclick="showPage('profilePage', this)">👤 Profile</button>
+</div>
+
+<script>
+let posts = [
+  {
+    name: "Official Sustain",
+    text: "Welcome to Sustain Social! 🎉",
+    likes: 0,
+    liked: false,
+    comments: []
+  }
+];
+
+function showPage(pageId, button) {
+  const pages = document.querySelectorAll("section");
+
+  pages.forEach(page => {
+    page.classList.add("hidden");
+  });
+
+  document.getElementById(pageId).classList.remove("hidden");
+
+  document.querySelectorAll(".nav button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  button.classList.add("active");
+}
+
+function createPost() {
+  const text = document.getElementById("postText").value.trim();
+
+  if (!text) {
+    alert("Please write something first.");
+    return;
+  }
+
+  posts.unshift({
+    name: "Official Sustain",
+    text: text,
+    likes: 0,
+    liked: false,
+    comments: []
+  });
+
+  document.getElementById("postText").value = "";
+
+  renderPosts();
+}
+
+function createPostFromCreate() {
+  const text = document.getElementById("createText").value.trim();
+
+  if (!text) {
+    alert("Please write something first.");
+    return;
+  }
+
+  posts.unshift({
+    name: "Official Sustain",
+    text: text,
+    likes: 0,
+    liked: false,
+    comments: []
+  });
+
+  document.getElementById("createText").value = "";
+
+  renderPosts();
+
+  showPage("homePage", document.querySelector(".nav button"));
+}
+
+function likePost(index) {
+  if (posts[index].liked) {
+    posts[index].likes--;
+    posts[index].liked = false;
+  } else {
+    posts[index].likes++;
+    posts[index].liked = true;
+  }
+
+  renderPosts();
+}
+
+function addComment(index) {
+  const input = document.getElementById("comment-" + index);
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  posts[index].comments.push(text);
+  input.value = "";
+
+  renderPosts();
+}
+
+function renderPosts() {
+  const feed = document.getElementById("feed");
+
+  feed.innerHTML = "";
+
+  posts.forEach((post, index) => {
+
+    let commentsHTML = "";
+
+    post.comments.forEach(comment => {
+      commentsHTML += `
+        <div class="comment">
+          <strong>Official Sustain:</strong> ${escapeHTML(comment)}
+        </div>
       `;
+    });
 
-      document.getElementById("feed").prepend(post);
-      document.getElementById("postText").value = "";
-    }
-  </script>
+    feed.innerHTML += `
+      <div class="card">
+        <div class="profile">
+          <div class="avatar">OS</div>
+          <div>
+            <strong>${post.name}</strong><br>
+            <small>Just now</small>
+          </div>
+        </div>
+
+        <div class="post-text">
+          ${escapeHTML(post.text)}
+        </div>
+
+        <div class="actions">
+          <button class="action-btn ${post.liked ? 'liked' : ''}"
+            onclick="likePost(${index})">
+            ❤️ ${post.likes}
+          </button>
+
+          <button class="action-btn"
+            onclick="document.getElementById('comment-${index}').focus()">
+            💬 Comment
+          </button>
+
+          <button class="action-btn"
+            onclick="sharePost(${index})">
+            ↗️ Share
+          </button>
+        </div>
+
+        <div class="comments">
+          ${commentsHTML}
+
+          <input
+            id="comment-${index}"
+            placeholder="Write a comment..."
+            style="width:75%;padding:9px;border:1px solid #ddd;border-radius:8px;"
+          >
+
+          <button onclick="addComment(${index})">
+            Send
+          </button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function searchPosts() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const results = document.getElementById("searchResults");
+
+  if (!query) {
+    results.innerHTML = "<p>Type something to search.</p>";
+    return;
+  }
+
+  const matches = posts.filter(post =>
+    post.text.toLowerCase().includes(query)
+  );
+
+  if (matches.length === 0) {
+    results.innerHTML = "<p>No posts found.</p>";
+    return;
+  }
+
+  results.innerHTML = matches.map(post => `
+    <div class="comment">
+      <strong>${post.name}</strong><br>
+      ${escapeHTML(post.text)}
+    </div>
+  `).join("");
+}
+
+function sharePost(index) {
+  const text = posts[index].text;
+
+  if (navigator.share) {
+    navigator.share({
+      title: "Sustain Social",
+      text: text
+    });
+  } else {
+    navigator.clipboard.writeText(text);
+    alert("Post copied to clipboard.");
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById("messageText");
+  const text = input.value.trim();
+
+  if (!text) {
+    alert("Write a message first.");
+    return;
+  }
+
+  document.getElementById("sentMessages").innerHTML += `
+    <div class="comment">
+      <strong>You:</strong> ${escapeHTML(text)}
+    </div>
+  `;
+
+  input.value = "";
+}
+
+function editProfile() {
+  const name = prompt("Enter your profile name:", "Official Sustain");
+
+  if (name) {
+    document.querySelector(".profile-info h2").textContent = name;
+  }
+}
+
+function escapeHTML(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+renderPosts();
+</script>
 
 </body>
 </html>
