@@ -1,4 +1,3 @@
-<!--deployment check -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +32,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .logo {
@@ -50,7 +50,7 @@ header {
 .container {
   max-width: 700px;
   margin: 20px auto;
-  padding: 0 12px 80px;
+  padding: 0 12px 90px;
 }
 
 .card {
@@ -59,6 +59,61 @@ header {
   padding: 16px;
   margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+textarea,
+input {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+button {
+  border: none;
+  background: #1877f2;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  opacity: .9;
+}
+
+.secondary {
+  background: #555;
+}
+
+.danger {
+  background: #d93025;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.action-btn {
+  background: transparent;
+  color: #555;
+  margin: 0;
+  flex: 1;
+}
+
+.action-btn.liked {
+  color: #1877f2;
+  font-weight: bold;
 }
 
 .profile {
@@ -83,49 +138,7 @@ header {
 .post-text {
   margin: 15px 0;
   line-height: 1.5;
-}
-
-textarea {
-  width: 100%;
-  min-height: 90px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 12px;
-  resize: vertical;
-  font-size: 15px;
-}
-
-button {
-  border: none;
-  background: #1877f2;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-button:hover {
-  opacity: .9;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-}
-
-.action-btn {
-  background: transparent;
-  color: #555;
-  margin: 0;
-  flex: 1;
-}
-
-.action-btn.liked {
-  color: #1877f2;
-  font-weight: bold;
+  white-space: pre-wrap;
 }
 
 .comments {
@@ -150,7 +163,7 @@ button:hover {
   border-top: 1px solid #ddd;
   display: flex;
   justify-content: center;
-  gap: 5px;
+  gap: 3px;
   padding: 8px;
   z-index: 20;
 }
@@ -168,18 +181,10 @@ button:hover {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-h2 {
-  margin-top: 5px;
-}
-
-.notification {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
-}
-
+.notification,
 .message {
   padding: 13px;
   border-bottom: 1px solid #eee;
@@ -211,6 +216,36 @@ h2 {
   font-weight: bold;
 }
 
+.auth-box {
+  max-width: 430px;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+.auth-box h1 {
+  text-align: center;
+  color: #1877f2;
+}
+
+.auth-box input {
+  margin-top: 10px;
+}
+
+.auth-box button {
+  width: 100%;
+}
+
+.small-text {
+  font-size: 13px;
+  color: #666;
+}
+
+.status {
+  text-align: center;
+  padding: 10px;
+  color: #555;
+}
+
 @media (max-width: 600px) {
   .search {
     width: 140px;
@@ -225,8 +260,16 @@ h2 {
   }
 
   .nav button {
-    padding: 8px 6px;
-    font-size: 11px;
+    padding: 8px 5px;
+    font-size: 10px;
+  }
+
+  .header-content {
+    flex-wrap: wrap;
+  }
+
+  .search {
+    flex: 1;
   }
 }
 </style>
@@ -234,373 +277,1376 @@ h2 {
 
 <body>
 
+<!-- LOGIN / SIGN UP -->
+<div id="authPage" class="auth-box card">
+
+  <h1>Sustain Social</h1>
+  <p style="text-align:center;">Connect, post, like and comment.</p>
+
+  <input id="authEmail" type="email" placeholder="Email">
+
+  <input id="authPassword" type="password" placeholder="Password">
+
+  <input id="authName" type="text" placeholder="Your name">
+
+  <button onclick="signUp()">Create Account</button>
+
+  <button onclick="login()">Login</button>
+
+  <p id="authMessage" class="status"></p>
+
+</div>
+
+
+<!-- APP -->
+<div id="appPage" class="hidden">
+
 <header>
   <div class="header-content">
+
     <div class="logo">Sustain Social</div>
-    <input class="search" id="searchInput" placeholder="Search..." oninput="searchPosts()">
+
+    <input
+      class="search"
+      id="searchInput"
+      placeholder="Search..."
+      oninput="searchPosts()"
+    >
+
   </div>
 </header>
 
+
 <div class="container">
 
-  <!-- HOME -->
-  <section id="homePage">
-    <div class="card">
-      <h2>What's on your mind?</h2>
-      <textarea id="postText" placeholder="Share something with Sustain Social..."></textarea>
-      <button onclick="createPost()">Post</button>
+<!-- HOME -->
+<section id="homePage">
+
+  <div class="card">
+
+    <h2>What's on your mind?</h2>
+
+    <textarea
+      id="postText"
+      placeholder="Share something with Sustain Social..."
+    ></textarea>
+
+    <button onclick="createPost()">Post</button>
+
+  </div>
+
+  <div id="feed"></div>
+
+</section>
+
+
+<!-- SEARCH -->
+<section id="searchPage" class="hidden">
+
+  <div class="card">
+
+    <h2>Search</h2>
+
+    <p class="small-text">
+      Search for posts using the search box above.
+    </p>
+
+    <div id="searchResults"></div>
+
+  </div>
+
+</section>
+
+
+<!-- CREATE -->
+<section id="createPage" class="hidden">
+
+  <div class="card">
+
+    <h2>Create a Post</h2>
+
+    <textarea
+      id="createText"
+      placeholder="What do you want to share?"
+    ></textarea>
+
+    <button onclick="createPostFromCreate()">
+      Publish
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- NOTIFICATIONS -->
+<section id="notificationsPage" class="hidden">
+
+  <div class="card">
+
+    <h2>Notifications</h2>
+
+    <div id="notificationsList">
+
+      <div class="notification">
+        🔔 Welcome to Sustain Social!
+      </div>
+
     </div>
 
-    <div id="feed"></div>
-  </section>
+  </div>
 
-  <!-- SEARCH -->
-  <section id="searchPage" class="hidden">
-    <div class="card">
-      <h2>Search</h2>
-      <p>Search for posts using the search box above.</p>
-      <div id="searchResults"></div>
-    </div>
-  </section>
+</section>
 
-  <!-- CREATE -->
-  <section id="createPage" class="hidden">
-    <div class="card">
-      <h2>Create a Post</h2>
-      <textarea id="createText" placeholder="What do you want to share?"></textarea>
-      <button onclick="createPostFromCreate()">Publish</button>
-    </div>
-  </section>
 
-  <!-- NOTIFICATIONS -->
-  <section id="notificationsPage" class="hidden">
-    <div class="card">
-      <h2>Notifications</h2>
+<!-- MESSAGES -->
+<section id="messagesPage" class="hidden">
 
-      <div class="notification">❤️ Someone liked your post.</div>
-      <div class="notification">💬 Someone commented on your post.</div>
-      <div class="notification">👤 Someone followed you.</div>
-    </div>
-  </section>
+  <div class="card">
 
-  <!-- MESSAGES -->
-  <section id="messagesPage" class="hidden">
-    <div class="card">
-      <h2>Messages</h2>
+    <h2>Messages</h2>
+
+    <div id="messagesList">
 
       <div class="message">
-        <strong>Welcome to Sustain Social</strong><br>
-        Your messages will appear here.
+        Welcome to Sustain Social messaging.
       </div>
 
-      <textarea id="messageText" placeholder="Write a message..."></textarea>
-      <button onclick="sendMessage()">Send</button>
-
-      <div id="sentMessages"></div>
     </div>
-  </section>
 
-  <!-- PROFILE -->
-  <section id="profilePage" class="hidden">
-    <div class="card">
-      <div class="profile-cover"></div>
+    <textarea
+      id="messageText"
+      placeholder="Write a message..."
+    ></textarea>
 
-      <div class="profile-info">
-        <div class="big-avatar">OS</div>
-        <h2>Official Sustain</h2>
-        <p>Welcome to my Sustain Social profile.</p>
-        <button onclick="editProfile()">Edit Profile</button>
+    <button onclick="sendMessage()">Send</button>
+
+  </div>
+
+</section>
+
+
+<!-- PROFILE -->
+<section id="profilePage" class="hidden">
+
+  <div class="card">
+
+    <div class="profile-cover"></div>
+
+    <div class="profile-info">
+
+      <div class="big-avatar" id="profileAvatar">
+        OS
       </div>
+
+      <h2 id="profileName">
+        Official Sustain
+      </h2>
+
+      <p id="profileBio">
+        Welcome to my Sustain Social profile.
+      </p>
+
+      <button onclick="editProfile()">
+        Edit Profile
+      </button>
+
+      <button class="danger" onclick="logout()">
+        Logout
+      </button>
+
     </div>
 
-    <div class="card">
-      <h3>About</h3>
-      <p>Building a social community with Sustain Social.</p>
-    </div>
-  </section>
+  </div>
+
+
+  <div class="card">
+
+    <h3>About</h3>
+
+    <p>
+      Building a social community with Sustain Social.
+    </p>
+
+    <p>
+      <strong>Followers:</strong>
+      <span id="followersCount">0</span>
+    </p>
+
+  </div>
+
+</section>
 
 </div>
+
 
 <!-- NAVIGATION -->
 <div class="nav">
-  <button class="active" onclick="showPage('homePage', this)">🏠 Home</button>
-  <button onclick="showPage('searchPage', this)">🔍 Search</button>
-  <button onclick="showPage('createPage', this)">➕ Create</button>
-  <button onclick="showPage('notificationsPage', this)">🔔 Alerts</button>
-  <button onclick="showPage('messagesPage', this)">💬 Chat</button>
-  <button onclick="showPage('profilePage', this)">👤 Profile</button>
+
+  <button
+    class="active"
+    onclick="showPage('homePage', this)"
+  >
+    🏠 Home
+  </button>
+
+  <button
+    onclick="showPage('searchPage', this)"
+  >
+    🔍 Search
+  </button>
+
+  <button
+    onclick="showPage('createPage', this)"
+  >
+    ➕ Create
+  </button>
+
+  <button
+    onclick="showPage('notificationsPage', this)"
+  >
+    🔔 Alerts
+  </button>
+
+  <button
+    onclick="showPage('messagesPage', this)"
+  >
+    💬 Chat
+  </button>
+
+  <button
+    onclick="showPage('profilePage', this)"
+  >
+    👤 Profile
+  </button>
+
 </div>
 
-<script>
-let posts = [
-  {
-    name: "Official Sustain",
-    text: "Welcome to Sustain Social! 🎉",
-    likes: 0,
-    liked: false,
-    comments: []
-  }
-];
+</div>
 
-function showPage(pageId, button) {
-  const pages = document.querySelectorAll("section");
 
-  pages.forEach(page => {
-    page.classList.add("hidden");
-  });
+<script type="module">
 
-  document.getElementById(pageId).classList.remove("hidden");
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-  document.querySelectorAll(".nav button").forEach(btn => {
-    btn.classList.remove("active");
-  });
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-  button.classList.add("active");
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  updateDoc,
+  doc,
+  arrayUnion,
+  arrayRemove,
+  serverTimestamp,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyBX1fRxPNNyKL1-CR83uiG1I-WhOQzggiE",
+
+  authDomain:
+    "my-social-app-a4ad0.firebaseapp.com",
+
+  projectId:
+    "my-social-app-a4ad0",
+
+  storageBucket:
+    "my-social-app-a4ad0.firebasestorage.app",
+
+  messagingSenderId:
+    "408621174015",
+
+  appId:
+    "1:408621174015:web:4338648b072d5bf871d0ca",
+
+  measurementId:
+    "G-1M7Z99T8NT"
+
+};
+
+
+/* INITIALIZE */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+/* LOCAL STATE */
+
+let posts = [];
+
+let unsubscribePosts = null;
+
+
+/* AUTH MESSAGE */
+
+function authMessage(message) {
+
+  document.getElementById("authMessage").textContent =
+    message;
+
 }
+
+
+/* SIGN UP */
+
+async function signUp() {
+
+  const email =
+    document.getElementById("authEmail").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value;
+
+  const name =
+    document.getElementById("authName").value.trim();
+
+
+  if (!email || !password || !name) {
+
+    authMessage(
+      "Please enter your name, email and password."
+    );
+
+    return;
+  }
+
+
+  if (password.length < 6) {
+
+    authMessage(
+      "Password must be at least 6 characters."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const result =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+
+    await updateProfile(
+      result.user,
+      {
+        displayName: name
+      }
+    );
+
+
+    await setDoc(
+      doc(db, "users", result.user.uid),
+      {
+        name: name,
+        email: email,
+        followers: [],
+        following: [],
+        createdAt: serverTimestamp()
+      }
+    );
+
+
+    authMessage("Account created successfully.");
+
+  } catch (error) {
+
+    authMessage(error.message);
+
+  }
+
+}
+
+
+/* LOGIN */
+
+async function login() {
+
+  const email =
+    document.getElementById("authEmail").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value;
+
+
+  if (!email || !password) {
+
+    authMessage(
+      "Enter your email and password."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  } catch (error) {
+
+    authMessage(error.message);
+
+  }
+
+}
+
+
+/* LOGOUT */
+
+async function logout() {
+
+  await signOut(auth);
+
+}
+
+
+/* AUTH STATE */
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (user) {
+
+    document
+      .getElementById("authPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("appPage")
+      .classList.remove("hidden");
+
+
+    updateProfileUI(user);
+
+    loadPosts();
+
+  } else {
+
+    document
+      .getElementById("authPage")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("appPage")
+      .classList.add("hidden");
+
+
+    if (unsubscribePosts) {
+
+      unsubscribePosts();
+
+      unsubscribePosts = null;
+
+    }
+
+  }
+
+});
+
+
+/* PROFILE UI */
+
+function updateProfileUI(user) {
+
+  const name =
+    user.displayName || "Official Sustain";
+
+
+  document.getElementById(
+    "profileName"
+  ).textContent = name;
+
+
+  const initials =
+    name
+      .split(" ")
+      .map(word => word[0])
+      .join("")
+      .substring(0, 2)
+      .toUpperCase();
+
+
+  document.getElementById(
+    "profileAvatar"
+  ).textContent = initials;
+
+}
+
+
+/* LOAD POSTS */
+
+function loadPosts() {
+
+  if (unsubscribePosts) {
+
+    unsubscribePosts();
+
+  }
+
+
+  const postsQuery = query(
+
+    collection(db, "posts"),
+
+    orderBy("createdAt", "desc")
+
+  );
+
+
+  unsubscribePosts =
+    onSnapshot(
+      postsQuery,
+
+      snapshot => {
+
+        posts =
+          snapshot.docs.map(item => ({
+
+            id: item.id,
+
+            ...item.data()
+
+          }));
+
+
+        renderPosts();
+
+        searchPosts();
+
+      },
+
+      error => {
+
+        console.error(
+          "Post loading error:",
+          error
+        );
+
+      }
+
+    );
+
+}
+
+
+/* CREATE HOME POST */
 
 async function createPost() {
-  console.log("CREATE POST WORKS");
-  const text = document.getElementById("postText").value.trim();
+
+  const input =
+    document.getElementById("postText");
+
+  const text =
+    input.value.trim();
+
 
   if (!text) {
+
     alert("Please write something first.");
+
     return;
+
   }
 
-  window.createePost = createPost;
-  posts.unshift({
-    name: "Official Sustain",
-    text: text,
-    likes: 0,
-    liked: false,
-    comments: []
-  });
-await addDoc(collection(db, "posts"), {
-  name: "Sustain",
-  text: text,
-  likes: 0,
-  likedBy: [],
-  comments: [],
-  profilePic: "",
-  userId: "user",
-  createdAt: new Date()
-});
-  document.getElementById("postText").value = "";
 
-  renderPosts();
+  const user =
+    auth.currentUser;
+
+
+  if (!user) {
+
+    alert("Please login first.");
+
+    return;
+
+  }
+
+
+  try {
+
+    await addDoc(
+
+      collection(db, "posts"),
+
+      {
+
+        userId: user.uid,
+
+        name:
+          user.displayName ||
+          "Official Sustain",
+
+        text: text,
+
+        likes: 0,
+
+        likedBy: [],
+
+        comments: [],
+
+        profilePic: "",
+
+        createdAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    input.value = "";
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "The post could not be published: " +
+      error.message
+    );
+
+  }
+
 }
 
-function createPostFromCreate() {
-  const text = document.getElementById("createText").value.trim();
+
+/* CREATE PAGE POST */
+
+async function createPostFromCreate() {
+
+  const input =
+    document.getElementById("createText");
+
+  const text =
+    input.value.trim();
+
 
   if (!text) {
+
     alert("Please write something first.");
+
     return;
+
   }
 
-  posts.unshift({
-    name: "Official Sustain",
-    text: text,
-    likes: 0,
-    liked: false,
-    comments: []
-  });
 
-  document.getElementById("createText").value = "";
+  const user =
+    auth.currentUser;
 
-  renderPosts();
 
-  showPage("homePage", document.querySelector(".nav button"));
-}
+  if (!user) {
 
-function likePost(index) {
-  if (posts[index].liked) {
-    posts[index].likes--;
-    posts[index].liked = false;
-  } else {
-    posts[index].likes++;
-    posts[index].liked = true;
+    alert("Please login first.");
+
+    return;
+
   }
 
-  renderPosts();
+
+  try {
+
+    await addDoc(
+
+      collection(db, "posts"),
+
+      {
+
+        userId: user.uid,
+
+        name:
+          user.displayName ||
+          "Official Sustain",
+
+        text: text,
+
+        likes: 0,
+
+        likedBy: [],
+
+        comments: [],
+
+        profilePic: "",
+
+        createdAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    input.value = "";
+
+
+    showPage(
+      "homePage",
+      document.querySelector(".nav button")
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "The post could not be published: " +
+      error.message
+    );
+
+  }
+
 }
 
-function addComment(index) {
-  const input = document.getElementById("comment-" + index);
-  const text = input.value.trim();
 
-  if (!text) return;
-
-  posts[index].comments.push(text);
-  input.value = "";
-
-  renderPosts();
-}
+/* RENDER POSTS */
 
 function renderPosts() {
-  const feed = document.getElementById("feed");
+
+  const feed =
+    document.getElementById("feed");
+
+
+  if (!feed) return;
+
 
   feed.innerHTML = "";
 
+
+  if (posts.length === 0) {
+
+    feed.innerHTML = `
+      <div class="card">
+        <p>No posts yet. Be the first to post!</p>
+      </div>
+    `;
+
+    return;
+
+  }
+
+
   posts.forEach((post, index) => {
+
+    const user =
+      auth.currentUser;
+
+
+    const likedBy =
+      post.likedBy || [];
+
+
+    const liked =
+      user
+        ? likedBy.includes(user.uid)
+        : false;
+
+
+    const likes =
+      likedBy.length;
+
 
     let commentsHTML = "";
 
-    post.comments.forEach(comment => {
-      commentsHTML += `
-        <div class="comment">
-          <strong>Official Sustain:</strong> ${escapeHTML(comment)}
-        </div>
-      `;
-    });
+
+    (post.comments || []).forEach(
+      comment => {
+
+        commentsHTML += `
+          <div class="comment">
+            <strong>
+              ${escapeHTML(
+                comment.name || "User"
+              )}
+            </strong>
+            <br>
+            ${escapeHTML(
+              comment.text || ""
+            )}
+          </div>
+        `;
+
+      }
+    );
+
 
     feed.innerHTML += `
+
       <div class="card">
+
         <div class="profile">
-          <div class="avatar">OS</div>
-          <div>
-            <strong>${post.name}</strong><br>
-            <small>Just now</small>
+
+          <div class="avatar">
+            ${escapeHTML(
+              getInitials(
+                post.name ||
+                "Official Sustain"
+              )
+            )}
           </div>
+
+          <div>
+
+            <strong>
+              ${escapeHTML(
+                post.name ||
+                "Official Sustain"
+              )}
+            </strong>
+
+            <br>
+
+            <small>
+              Sustain Social
+            </small>
+
+          </div>
+
         </div>
+
 
         <div class="post-text">
-          ${escapeHTML(post.text)}
+
+          ${escapeHTML(
+            post.text || ""
+          )}
+
         </div>
 
+
         <div class="actions">
-          <button class="action-btn ${post.liked ? 'liked' : ''}"
-            onclick="likePost(${index})">
-            ❤️ ${post.likes}
+
+          <button
+            class="action-btn ${liked ? "liked" : ""}"
+            onclick="likePost('${post.id}')"
+          >
+            ❤️ ${likes}
           </button>
 
-          <button class="action-btn"
-            onclick="document.getElementById('comment-${index}').focus()">
+
+          <button
+            class="action-btn"
+            onclick="focusComment('${post.id}')"
+          >
             💬 Comment
           </button>
 
-          <button class="action-btn"
-            onclick="sharePost(${index})">
+
+          <button
+            class="action-btn"
+            onclick="sharePost('${post.id}')"
+          >
             ↗️ Share
           </button>
+
         </div>
+
 
         <div class="comments">
+
           ${commentsHTML}
 
-          <input
-            id="comment-${index}"
-            placeholder="Write a comment..."
-            style="width:75%;padding:9px;border:1px solid #ddd;border-radius:8px;"
-          >
 
-          <button onclick="addComment(${index})">
-            Send
-          </button>
+          <div style="display:flex;gap:6px;margin-top:10px;">
+
+            <input
+              id="comment-${post.id}"
+              placeholder="Write a comment..."
+            >
+
+            <button
+              onclick="addComment('${post.id}')"
+            >
+              Send
+            </button>
+
+          </div>
+
         </div>
+
       </div>
+
     `;
+
   });
+
 }
 
-function searchPosts() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
-  const results = document.getElementById("searchResults");
 
-  if (!query) {
-    results.innerHTML = "<p>Type something to search.</p>";
+/* LIKE */
+
+async function likePost(postId) {
+
+  const user =
+    auth.currentUser;
+
+
+  if (!user) {
+
+    alert("Please login first.");
+
     return;
+
   }
 
-  const matches = posts.filter(post =>
-    post.text.toLowerCase().includes(query)
+
+  const postRef =
+    doc(db, "posts", postId);
+
+
+  const post =
+    posts.find(
+      item => item.id === postId
+    );
+
+
+  if (!post) return;
+
+
+  const likedBy =
+    post.likedBy || [];
+
+
+  if (likedBy.includes(user.uid)) {
+
+    await updateDoc(
+
+      postRef,
+
+      {
+
+        likedBy:
+          arrayRemove(user.uid)
+
+      }
+
+    );
+
+  } else {
+
+    await updateDoc(
+
+      postRef,
+
+      {
+
+        likedBy:
+          arrayUnion(user.uid)
+
+      }
+
+    );
+
+  }
+
+}
+
+
+/* COMMENT */
+
+async function addComment(postId) {
+
+  const input =
+    document.getElementById(
+      "comment-" + postId
+    );
+
+
+  const text =
+    input.value.trim();
+
+
+  if (!text) return;
+
+
+  const user =
+    auth.currentUser;
+
+
+  if (!user) {
+
+    alert("Please login first.");
+
+    return;
+
+  }
+
+
+  const postRef =
+    doc(db, "posts", postId);
+
+
+  await updateDoc(
+
+    postRef,
+
+    {
+
+      comments:
+        arrayUnion({
+
+          userId: user.uid,
+
+          name:
+            user.displayName ||
+            "Official Sustain",
+
+          text: text
+
+        })
+
+    }
+
   );
 
-  if (matches.length === 0) {
-    results.innerHTML = "<p>No posts found.</p>";
-    return;
-  }
-
-  results.innerHTML = matches.map(post => `
-    <div class="comment">
-      <strong>${post.name}</strong><br>
-      ${escapeHTML(post.text)}
-    </div>
-  `).join("");
-}
-
-function sharePost(index) {
-  const text = posts[index].text;
-
-  if (navigator.share) {
-    navigator.share({
-      title: "Sustain Social",
-      text: text
-    });
-  } else {
-    navigator.clipboard.writeText(text);
-    alert("Post copied to clipboard.");
-  }
-}
-
-function sendMessage() {
-  const input = document.getElementById("messageText");
-  const text = input.value.trim();
-
-  if (!text) {
-    alert("Write a message first.");
-    return;
-  }
-
-  document.getElementById("sentMessages").innerHTML += `
-    <div class="comment">
-      <strong>You:</strong> ${escapeHTML(text)}
-    </div>
-  `;
 
   input.value = "";
+
 }
 
-function editProfile() {
-  const name = prompt("Enter your profile name:", "Official Sustain");
 
-  if (name) {
-    document.querySelector(".profile-info h2").textContent = name;
+/* COMMENT FOCUS */
+
+function focusComment(postId) {
+
+  const input =
+    document.getElementById(
+      "comment-" + postId
+    );
+
+
+  if (input) {
+
+    input.focus();
+
   }
+
 }
+
+
+/* SHARE */
+
+async function sharePost(postId) {
+
+  const post =
+    posts.find(
+      item => item.id === postId
+    );
+
+
+  if (!post) return;
+
+
+  if (navigator.share) {
+
+    await navigator.share({
+
+      title: "Sustain Social",
+
+      text: post.text
+
+    });
+
+  } else {
+
+    await navigator.clipboard.writeText(
+      post.text
+    );
+
+    alert(
+      "Post copied to clipboard."
+    );
+
+  }
+
+}
+
+
+/* SEARCH */
+
+function searchPosts() {
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+
+  const results =
+    document.getElementById(
+      "searchResults"
+    );
+
+
+  if (!input || !results) return;
+
+
+  const queryText =
+    input.value
+      .trim()
+      .toLowerCase();
+
+
+  if (!queryText) {
+
+    results.innerHTML =
+      "<p>Type something to search.</p>";
+
+    return;
+
+  }
+
+
+  const matches =
+    posts.filter(post =>
+
+      (post.text || "")
+        .toLowerCase()
+        .includes(queryText)
+
+      ||
+
+      (post.name || "")
+        .toLowerCase()
+        .includes(queryText)
+
+    );
+
+
+  if (matches.length === 0) {
+
+    results.innerHTML =
+      "<p>No posts found.</p>";
+
+    return;
+
+  }
+
+
+  results.innerHTML =
+    matches.map(post => `
+
+      <div class="comment">
+
+        <strong>
+          ${escapeHTML(
+            post.name || "User"
+          )}
+        </strong>
+
+        <br>
+
+        ${escapeHTML(
+          post.text || ""
+        )}
+
+      </div>
+
+    `).join("");
+
+}
+
+
+/* NAVIGATION */
+
+function showPage(pageId, button) {
+
+  document
+    .querySelectorAll("section")
+    .forEach(page => {
+
+      page.classList.add("hidden");
+
+    });
+
+
+  document
+    .getElementById(pageId)
+    .classList.remove("hidden");
+
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(btn => {
+
+      btn.classList.remove("active");
+
+    });
+
+
+  if (button) {
+
+    button.classList.add("active");
+
+  }
+
+}
+
+
+/* MESSAGE */
+
+function sendMessage() {
+
+  const input =
+    document.getElementById(
+      "messageText"
+    );
+
+
+  const text =
+    input.value.trim();
+
+
+  if (!text) {
+
+    alert("Write a message first.");
+
+    return;
+
+  }
+
+
+  const list =
+    document.getElementById(
+      "messagesList"
+    );
+
+
+  list.innerHTML += `
+
+    <div class="message">
+
+      <strong>You:</strong>
+
+      ${escapeHTML(text)}
+
+    </div>
+
+  `;
+
+
+  input.value = "";
+
+}
+
+
+/* EDIT PROFILE */
+
+async function editProfile() {
+
+  const user =
+    auth.currentUser;
+
+
+  if (!user) return;
+
+
+  const name =
+    prompt(
+      "Enter your profile name:",
+      user.displayName ||
+      "Official Sustain"
+    );
+
+
+  if (!name) return;
+
+
+  await updateProfile(
+
+    user,
+
+    {
+
+      displayName: name
+
+    }
+
+  );
+
+
+  updateProfileUI(user);
+
+}
+
+
+/* HELPERS */
+
+function getInitials(name) {
+
+  return name
+    .split(" ")
+    .map(word => word[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
+
+}
+
 
 function escapeHTML(text) {
-  const div = document.createElement("div");
-  div.textContent = text;
+
+  const div =
+    document.createElement("div");
+
+
+  div.textContent =
+    text;
+
+
   return div.innerHTML;
+
 }
 
-renderPosts();
-</script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
-  import { getFirestore,collection,addDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBX1fRxPNNyKL1-CR83uiG1I-WhOQzggiE",
-    authDomain: "my-social-app-a4ad0.firebaseapp.com",
-    projectId: "my-social-app-a4ad0",
-    storageBucket: "my-social-app-a4ad0.firebasestorage.app",
-    messagingSenderId: "408621174015",
-    appId: "1:408621174015:web:4338648b072d5bf871d0ca",
-    measurementId: "G-1M7Z99T8NT"
-  };
+/* MAKE FUNCTIONS AVAILABLE TO BUTTONS */
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getFirestore(app);
+window.signUp = signUp;
+window.login = login;
+window.logout = logout;
+window.createPost = createPost;
+window.createPostFromCreate = createPostFromCreate;
+window.likePost = likePost;
+window.addComment = addComment;
+window.focusComment = focusComment;
+window.sharePost = sharePost;
+window.searchPosts = searchPosts;
+window.showPage = showPage;
+window.sendMessage = sendMessage;
+window.editProfile = editProfile;
+
 </script>
+
 </body>
 </html>
