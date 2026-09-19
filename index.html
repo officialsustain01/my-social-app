@@ -358,7 +358,7 @@ function showPage(pageId, button) {
   button.classList.add("active");
 }
 
-function createPost() {
+async function createPost() {
   const text = document.getElementById("postText").value.trim();
 
   if (!text) {
@@ -373,7 +373,16 @@ function createPost() {
     liked: false,
     comments: []
   });
-
+await addDoc(collection(db, "posts"), {
+  name: "Sustain",
+  text: text,
+  likes: 0,
+  likedBy: [],
+  comments: [],
+  profilePic: "",
+  userId: "user",
+  createdAt: new Date()
+});
   document.getElementById("postText").value = "";
 
   renderPosts();
@@ -570,7 +579,7 @@ renderPosts();
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+  import { getFirestore,collection,addDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
